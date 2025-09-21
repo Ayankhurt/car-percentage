@@ -2,104 +2,103 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Car Import Calculator</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background: #0f1724;
-            color: #e6eef6;
-            font-family: sans-serif
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Car Import Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0f1724;
+      color: #e6eef6;
+      font-family: sans-serif
+    }
 
-        .box {
-            max-width: 500px;
-            margin: auto;
-            background: #0b1220;
-            padding: 20px;
-            border-radius: 12px
-        }
+    .box {
+      max-width: 500px;
+      margin: auto;
+      background: #0b1220;
+      padding: 20px;
+      border-radius: 12px
+    }
 
-        input,
-        button {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background: #111;
-            color: #fff;
-            width: 100%;
-            margin: 6px 0
-        }
+    input,
+    button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #333;
+      background: #111;
+      color: #fff;
+      width: 100%;
+      margin: 6px 0
+    }
 
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #111;
-            font-size: 16px
-        }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #111;
+      font-size: 16px
+    }
 
-        .bar {
-            height: 12px;
-            background: linear-gradient(90deg, #06b6d4, #7dd3fc);
-            border-radius: 99px;
-            margin: 6px 0
-        }
-    </style>
+    .bar {
+      height: 12px;
+      background: linear-gradient(90deg, #06b6d4, #7dd3fc);
+      border-radius: 99px;
+      margin: 6px 0
+    }
+  </style>
 </head>
 
 <body>
-    <div class="box">
-        <h2>Car Import % Calculator</h2>
+  <div class="box">
+    <h2>Car Import % Calculator</h2>
 
-        <label>Car Price (PKR)</label>
-        <input type="number" id="price" value="2000000">
+    <label>Model Year</label>
+    <input type="number" id="modelYear" value="2021">
 
-        <label>Model Year</label>
-        <input type="number" id="modelYear" value="2021">
+    <label>Import Date</label>
+    <input type="date" id="importDate" value="2025-09-20">
 
-        <label>Import Date</label>
-        <input type="date" id="importDate" value="2025-09-20">
+    <button onclick="calc()">Calculate</button>
 
-        <button onclick="calc()">Calculate</button>
+    <div class="result" id="output"></div>
+  </div>
 
-        <div class="result" id="output"></div>
-    </div>
+  <script>
+    function calc() {
+      let modelYear = +document.getElementById('modelYear').value
+      let imp = new Date(document.getElementById('importDate').value)
 
-    <script>
-        function calc() {
-            let price = +document.getElementById('price').value
-            let modelYear = +document.getElementById('modelYear').value
-            let imp = new Date(document.getElementById('importDate').value)
+      let startYear = modelYear + 1
+      let start = new Date(startYear, 0, 1)
+      let end = new Date(imp.getFullYear(), imp.getMonth(), 1)
 
-            let startYear = modelYear + 1
-            let start = new Date(startYear, 0, 1)
-            let end = new Date(imp.getFullYear(), imp.getMonth(), 1)
+      let totalMonths = 0
+      let cur = new Date(start)
+      while (cur <= end) {
+        totalMonths++
+        cur.setMonth(cur.getMonth() + 1)
+      }
 
-            let totalMonths = 0
-            let cur = new Date(start)
-            while (cur <= end) {
-                totalMonths++
-                cur.setMonth(cur.getMonth() + 1)
-            }
+      if (imp.getDate() <= 15) totalMonths--
+      if (totalMonths < 0) totalMonths = 0
 
-            if (imp.getDate() <= 15) totalMonths--
-            if (totalMonths < 0) totalMonths = 0
+      // 1 month = 1% , max 50%
+      let pct = Math.min(totalMonths, 50)
 
-            let pct = totalMonths
-            let amount = Math.round(price * (pct / 100))
+      let note = pct === 50 ? "<p style='color:#f87171'><b>Depreciation capped at max 50%</b></p>" : ""
 
-            document.getElementById('output').innerHTML = `
-    <p><b>Model Year:</b> ${modelYear}</p>
-    <p><b>Import Date:</b> ${imp.toDateString()}</p>
-    <p><b>Total Months:</b> ${totalMonths}</p>
-    <div class="bar" style="width:${pct}%"></div>
-    <p><b>${pct}%</b> = PKR ${amount.toLocaleString()}</p>
-  `
-        }
-    </script>
+      document.getElementById('output').innerHTML = `
+        <p><b>Model Year:</b> ${modelYear}</p>
+        <p><b>Import Date:</b> ${imp.toDateString()}</p>
+        <p><b>Total Months:</b> ${totalMonths}</p>
+        <div class="bar" style="width:${pct}%"></div>
+        <p><b>Percentage:</b> ${pct}%</p>
+        ${note}
+      `
+    }
+  </script>
 </body>
 
 </html>
