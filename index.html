@@ -9,15 +9,29 @@
     body {
       margin: 0;
       padding: 20px;
-      background: #0f1724;
-      color: #e6eef6;
+      background: rgba(150, 178, 223, 0.8);
+      color: #000000;
       font-family: sans-serif
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('pexels-lynxexotics-3752194.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      z-index: -1;
     }
 
     .box {
       max-width: 500px;
       margin: auto;
-      background: #0b1220;
+      background: transparent;
       padding: 20px;
       border-radius: 12px
     }
@@ -58,7 +72,7 @@
     <input type="number" id="modelYear" value="2021">
 
     <label>Import Date</label>
-    <input type="date" id="importDate" value="2025-09-20">
+    <input type="date" id="importDate" value="20-12-2025">
 
     <button onclick="calc()">Calculate</button>
 
@@ -84,7 +98,6 @@
       if (imp.getDate() <= 15) totalMonths--
       if (totalMonths < 0) totalMonths = 0
 
-      // 1 month = 1% , max 50%
       let pct = Math.min(totalMonths, 50)
 
       let note = pct === 50 ? "<p style='color:#f87171'><b>Depreciation capped at max 50%</b></p>" : ""
