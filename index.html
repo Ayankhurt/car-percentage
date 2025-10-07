@@ -5,15 +5,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Car Import Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: rgba(150, 178, 223, 0.8);
-      color: #000000;
-      font-family: sans-serif
+    /* ===== GENERAL STYLES ===== */
+    * {
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
     }
 
+    body {
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ===== BACKGROUND IMAGE ===== */
     body::before {
       content: '';
       position: fixed;
@@ -21,45 +34,121 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('pexels-lynxexotics-3752194.jpg');
-      background-size: cover;
-      background-position: center;
-      filter: blur(5px);
+      background: url('pexels-lynxexotics-3752194.jpg') no-repeat center center/cover;
+      filter: blur(8px) brightness(0.6);
+      z-index: -2;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(0, 0, 0, 0.3), rgba(30, 30, 30, 0.6));
       z-index: -1;
     }
 
+    /* ===== MAIN BOX ===== */
     .box {
+      width: 90%;
       max-width: 500px;
-      margin: auto;
-      background: transparent;
-      padding: 20px;
-      border-radius: 12px
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      text-align: center;
     }
 
-    input,
-    button {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #333;
-      background: #111;
-      color: #fff;
+    h2 {
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+      color: #7dd3fc;
+      text-shadow: 0 0 8px rgba(125, 211, 252, 0.5);
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-size: 14px;
+      margin-top: 10px;
+      color: #e0f2fe;
+    }
+
+    input {
       width: 100%;
-      margin: 6px 0
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      margin-top: 6px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
     }
 
+    input:focus {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 8px #38bdf8;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    /* ===== RESULT AREA ===== */
     .result {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      background: #111;
-      font-size: 16px
+      margin-top: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #e0f2fe;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
     }
 
     .bar {
-      height: 12px;
-      background: linear-gradient(90deg, #06b6d4, #7dd3fc);
+      height: 14px;
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
       border-radius: 99px;
-      margin: 6px 0
+      margin: 10px 0;
+      transition: width 0.6s ease;
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 20px;
+      }
+
+      .box {
+        padding: 20px;
+      }
+
+      input,
+      button {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -69,10 +158,10 @@
     <h2>Car Import % Calculator</h2>
 
     <label>Model Year</label>
-    <input type="number" id="modelYear" value="2021">
+    <input type="number" id="modelYear" value="2021" placeholder="Enter Model Year">
 
     <label>Import Date</label>
-    <input type="date" id="importDate" value="20-12-2025">
+    <input type="date" id="importDate">
 
     <button onclick="calc()">Calculate</button>
 
@@ -81,35 +170,41 @@
 
   <script>
     function calc() {
-      let modelYear = +document.getElementById('modelYear').value
-      let imp = new Date(document.getElementById('importDate').value)
+      const modelYear = +document.getElementById('modelYear').value;
+      const imp = new Date(document.getElementById('importDate').value);
 
-      let startYear = modelYear + 1
-      let start = new Date(startYear, 0, 1)
-      let end = new Date(imp.getFullYear(), imp.getMonth(), 1)
-
-      let totalMonths = 0
-      let cur = new Date(start)
-      while (cur <= end) {
-        totalMonths++
-        cur.setMonth(cur.getMonth() + 1)
+      if (!modelYear || !imp.getTime()) {
+        document.getElementById('output').innerHTML =
+          "<p style='color:#f87171'><b>Please enter valid data.</b></p>";
+        return;
       }
 
-      if (imp.getDate() <= 15) totalMonths--
-      if (totalMonths < 0) totalMonths = 0
+      const startYear = modelYear + 1;
+      const start = new Date(startYear, 0, 1);
+      const end = new Date(imp.getFullYear(), imp.getMonth(), 1);
 
-      let pct = Math.min(totalMonths, 50)
+      let totalMonths = 0;
+      let cur = new Date(start);
 
-      let note = pct === 50 ? "<p style='color:#f87171'><b>Depreciation capped at max 50%</b></p>" : ""
+      while (cur <= end) {
+        totalMonths++;
+        cur.setMonth(cur.getMonth() + 1);
+      }
+
+      if (imp.getDate() <= 15) totalMonths--;
+      if (totalMonths < 0) totalMonths = 0;
+
+      const pct = Math.min(totalMonths, 50);
+      const note = pct === 50 ? "<p style='color:#f87171'><b>Depreciation capped at 50%</b></p>" : "";
 
       document.getElementById('output').innerHTML = `
         <p><b>Model Year:</b> ${modelYear}</p>
         <p><b>Import Date:</b> ${imp.toDateString()}</p>
         <p><b>Total Months:</b> ${totalMonths}</p>
         <div class="bar" style="width:${pct}%"></div>
-        <p><b>Percentage:</b> ${pct}%</p>
+        <p><b>Depreciation:</b> ${pct}%</p>
         ${note}
-      `
+      `;
     }
   </script>
 </body>
